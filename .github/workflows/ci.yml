@@ -1,0 +1,40 @@
+name: CI
+
+# Kiedy uruchamiać workflow
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+# Zmienne środowiskowe dla całego workflow
+env:
+  DOTNET_VERSION: '10.0.x'
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. Pobierz kod z repozytorium
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Zainstaluj .NET SDK
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      # 3. Przywróć pakiety NuGet
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # 4. Zbuduj projekt
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      # 5. Uruchom testy
+      - name: Test
+        run: dotnet test --configuration Release --no-build --verbosity normal
