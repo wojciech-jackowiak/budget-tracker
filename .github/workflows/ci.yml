@@ -8,7 +8,7 @@ on:
 
 env:
   DOTNET_VERSION: '10.0.x'
-  WORKING_DIRECTORY: ./api/src
+  WORKING_DIRECTORY: ./src
 
 jobs:
   build-and-test:
