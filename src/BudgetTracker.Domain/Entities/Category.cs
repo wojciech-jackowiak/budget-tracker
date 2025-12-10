@@ -8,7 +8,7 @@ namespace BudgetTracker.Domain.Entities
 {
     public class Category : BaseEntity
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public string? Description { get; set; }
         public CategoryType Type { get; set; }
 
