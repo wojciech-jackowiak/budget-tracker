@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Net.Http" Version="4.3.0" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BudgetTracker.Application\BudgetTracker.Application.csproj" />
+    <ProjectReference Include="..\BudgetTracker.Domain\BudgetTracker.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
