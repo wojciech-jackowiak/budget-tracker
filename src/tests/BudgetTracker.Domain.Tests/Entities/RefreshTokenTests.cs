@@ -15,6 +15,7 @@ namespace BudgetTracker.Domain.Tests.Entities
             // Arrange
             var token = new RefreshToken
             {
+                Token = "test-token",
                 ExpiresAt = DateTime.UtcNow.AddDays(-1)
             };
 
@@ -30,6 +31,7 @@ namespace BudgetTracker.Domain.Tests.Entities
             // Arrange
             var token = new RefreshToken
             {
+                Token = "test-token",
                 ExpiresAt = DateTime.UtcNow.AddDays(7)
             };
 
@@ -45,6 +47,7 @@ namespace BudgetTracker.Domain.Tests.Entities
             // Arrange
             var token = new RefreshToken
             {
+                Token = "test-token",
                 ExpiresAt = DateTime.UtcNow
             };
 
@@ -62,6 +65,7 @@ namespace BudgetTracker.Domain.Tests.Entities
             // Arrange
             var token = new RefreshToken
             {
+                Token = "test-token",
                 RevokedAt = null
             };
 
@@ -77,6 +81,7 @@ namespace BudgetTracker.Domain.Tests.Entities
             // Arrange
             var token = new RefreshToken
             {
+                Token = "test-token",
                 RevokedAt = DateTime.UtcNow
             };
 
@@ -93,7 +98,8 @@ namespace BudgetTracker.Domain.Tests.Entities
             var token = new RefreshToken
             {
                 ExpiresAt = DateTime.UtcNow.AddDays(7),
-                RevokedAt = null
+                RevokedAt = null,
+                Token = "test-token",
             };
 
             // Act
@@ -109,7 +115,8 @@ namespace BudgetTracker.Domain.Tests.Entities
             var token = new RefreshToken
             {
                 ExpiresAt = DateTime.UtcNow.AddDays(-1),
-                RevokedAt = null
+                RevokedAt = null,
+                Token = "test-token",
             };
 
             // Act
@@ -125,7 +132,8 @@ namespace BudgetTracker.Domain.Tests.Entities
             var token = new RefreshToken
             {
                 ExpiresAt = DateTime.UtcNow.AddDays(-1),
-                RevokedAt = DateTime.UtcNow.AddDays(-2)
+                RevokedAt = DateTime.UtcNow.AddDays(-2),
+                Token = "test-token",
             };
 
             // Act
