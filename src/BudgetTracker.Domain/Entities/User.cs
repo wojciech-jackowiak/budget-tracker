@@ -7,9 +7,9 @@ namespace BudgetTracker.Domain.Entities
 {
     public class User : BaseEntity
     {
-        public string Username { get; set; }
-        public string Email { get; set; }
-        public string PasswordHash { get; set; }
+        public required string Username { get; set; }
+        public required string Email { get; set; }
+        public required string PasswordHash { get; set; }
         public string Role { get; set; } = "User";
         public bool IsActive { get; set; } = true;
         public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
