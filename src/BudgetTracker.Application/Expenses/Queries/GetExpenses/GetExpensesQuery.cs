@@ -1,10 +1,12 @@
-﻿using System;
+﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace BudgetTracker.Application.Expenses.Queries.GetExpenses
 {
-    internal class GetExpensesQuery
+    public class GetExpensesQuery : IRequest<List<ExpenseDto>>
     {
+        public int UserId { get; set; }
     }
 }
