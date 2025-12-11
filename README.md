@@ -17,10 +17,10 @@ budget-tracker/
 │   ├── BudgetTracker.Application/      # CQRS, MediatR Handlers
 │   ├── BudgetTracker.Infrastructure/   # EF Core, Database
 │   └── BudgetTracker.WebAPI/           # Controllers, API
-├── tests/
-│   ├── BudgetTracker.Domain.Tests/
-│   ├── BudgetTracker.Application.Tests/
-│   └── BudgetTracker.WebAPI.Tests/
+│   └── tests/
+│       ├── BudgetTracker.Domain.Tests/
+│       ├── BudgetTracker.Application.Tests/
+│       ├── BudgetTracker.WebAPI.Tests/
 └── docker/
 ```
 
