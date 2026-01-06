@@ -10,12 +10,12 @@ namespace BudgetTracker.Application.Tests.Expenses.Queries.GetExpenses
 {
     public class GetExpensesQueryHandlerTests
     {
-        private readonly Mock<IApplicationDbContext> _contextMock;
+        private readonly Mock<IBudgetTrackerDbContext> _contextMock;
         private readonly GetExpensesQueryHandler _handler;
         private List<Transaction> _transactions;
         public GetExpensesQueryHandlerTests()
         {
-            _contextMock = new Mock<IApplicationDbContext>();
+            _contextMock = new Mock<IBudgetTrackerDbContext>();
             _handler = new GetExpensesQueryHandler(_contextMock.Object);
         }
         private void SetupTransactions(List<Transaction> transactions)

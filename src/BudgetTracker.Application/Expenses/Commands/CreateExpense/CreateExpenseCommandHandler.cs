@@ -10,9 +10,9 @@ namespace BudgetTracker.Application.Expenses.Commands.CreateExpense
 {
     public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand, int>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IBudgetTrackerDbContext _context;
 
-        public CreateExpenseCommandHandler(IApplicationDbContext context)
+        public CreateExpenseCommandHandler(IBudgetTrackerDbContext context)
         {
             _context = context;
         }

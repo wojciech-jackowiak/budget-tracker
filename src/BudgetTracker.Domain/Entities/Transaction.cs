@@ -8,15 +8,97 @@ namespace BudgetTracker.Domain.Entities
 {
     public class Transaction : BaseEntity
     {
-        public decimal Amount { get; set; }
-        public required string Description { get; set; }
-        public DateTime Date { get; set; }
-        public TransactionType Type { get; set; }
+        public decimal Amount { get; private set; }
+        public string Description { get; private set; }
+        public DateTime Date { get; private set; }
+        public string MonthYear { get; private set; } // "2026-01" dla grupowania
+        public TransactionType Type { get; private set; }
 
-        public int? CategoryId { get; set; }
-        public Category? Category { get; set; }
+        public int CategoryId { get; private set; } // ← NOT NULL!
+        public Category Category { get; private set; } = null!;
 
-        public int UserId { get; set; }
-        public User User { get; set; }
+        public int UserId { get; private set; }
+        public User User { get; private set; } = null!;
+
+        // Link do recurring parent (jeśli została wygenerowana automatycznie)
+        public int? RecurringTransactionId { get; private set; }
+        public RecurringTransaction? RecurringTransaction { get; private set; }
+
+        private Transaction() { }
+
+        public static Transaction Create(
+            int userId,
+            int categoryId,
+            decimal amount,
+            TransactionType type,
+            string description,
+            DateTime date)
+        {
+            ValidateAmount(amount);
+            ValidateDescription(description);
+
+            return new Transaction
+            {
+                UserId = userId,
+                CategoryId = categoryId,
+                Amount = amount,
+                Type = type,
+                Description = description,
+                Date = date,
+                MonthYear = date.ToString("yyyy-MM")
+            };
+        }
+
+        public static Transaction CreateFromRecurring(
+            RecurringTransaction recurringTransaction,
+            DateTime date)
+        {
+            return new Transaction
+            {
+                UserId = recurringTransaction.UserId,
+                CategoryId = recurringTransaction.CategoryId,
+                Amount = recurringTransaction.Amount,
+                Type = recurringTransaction.Type,
+                Description = recurringTransaction.Description,
+                Date = date,
+                MonthYear = date.ToString("yyyy-MM"),
+                RecurringTransactionId = recurringTransaction.Id // ← link!
+            };
+        }
+
+        public void Update(decimal amount, int categoryId, string description, DateTime date)
+        {
+            if (RecurringTransactionId.HasValue)
+                throw new DomainException("Cannot edit recurring-generated transaction");
+
+            ValidateAmount(amount);
+            ValidateDescription(description);
+
+            Amount = amount;
+            CategoryId = categoryId;
+            Description = description;
+            Date = date;
+            MonthYear = date.ToString("yyyy-MM");
+            MarkAsModified();
+        }
+
+        private static void ValidateAmount(decimal amount)
+        {
+            if (amount <= 0)
+                throw new DomainException("Amount must be greater than zero");
+
+            // Zabezpieczenie przed zbyt dużymi kwotami (np. błąd w UI)
+            if (amount > 1_000_000_000)
+                throw new DomainException("Amount exceeds maximum allowed value");
+        }
+
+        private static void ValidateDescription(string description)
+        {
+            if (string.IsNullOrWhiteSpace(description))
+                throw new DomainException("Description cannot be empty");
+
+            if (description.Length > 500)
+                throw new DomainException("Description too long (max 500 characters)");
+        }
     }
 }

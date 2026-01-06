@@ -6,9 +6,9 @@ namespace BudgetTracker.Application.Expenses.Queries.GetExpenses
 {
     public class GetExpensesQueryHandler : IRequestHandler<GetExpensesQuery, List<ExpenseDto>>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IBudgetTrackerDbContext _context;
 
-        public GetExpensesQueryHandler(IApplicationDbContext context)
+        public GetExpensesQueryHandler(IBudgetTrackerDbContext context)
         {
             _context = context;
         }

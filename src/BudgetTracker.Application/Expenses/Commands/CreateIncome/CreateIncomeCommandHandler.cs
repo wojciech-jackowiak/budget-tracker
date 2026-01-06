@@ -11,9 +11,9 @@ namespace BudgetTracker.Application.Expenses.Commands.CreateIncome
 {   
     public class CreateIncomeCommandHandler : IRequestHandler<CreateIncomeCommand, int>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IBudgetTrackerDbContext _context;
 
-        public CreateIncomeCommandHandler(IApplicationDbContext context)
+        public CreateIncomeCommandHandler(IBudgetTrackerDbContext context)
         {
             _context = context;
         }

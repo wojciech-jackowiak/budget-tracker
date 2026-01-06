@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BudgetTracker.Application.Common.Interfaces
 {
-    public interface IApplicationDbContext
+    public interface IBudgetTrackerDbContext
     {
         DbSet<User> Users { get; }
         DbSet<Category> Categories { get; }

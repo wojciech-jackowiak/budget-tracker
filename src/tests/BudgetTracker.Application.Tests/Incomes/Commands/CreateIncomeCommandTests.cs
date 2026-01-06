@@ -14,13 +14,13 @@ namespace BudgetTracker.Application.Tests.Incomes.Commands
 {
     public class CreateIncomeCommandTests
     {
-        private readonly Mock<IApplicationDbContext> _contextMock;
+        private readonly Mock<IBudgetTrackerDbContext> _contextMock;
         private readonly CreateIncomeCommandHandler _handler;
         private readonly List<Transaction> _transactions;
         private int _idCounter = 1;
         public CreateIncomeCommandTests()
         {
-            _contextMock = new Mock<IApplicationDbContext>();
+            _contextMock = new Mock<IBudgetTrackerDbContext>();
             _transactions = new List<Transaction>();
 
             SetupTransactionsDbSet();
