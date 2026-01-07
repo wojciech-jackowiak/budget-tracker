@@ -11,18 +11,22 @@ namespace BudgetTracker.Domain.Entities
     {
         public string Name { get; private set; }
         public string? Description { get; private set; }
-        public string IconName { get; private set; } 
-        public string ColorCode { get; private set; } // #hex
+        public string IconName { get; private set; }
+        public string ColorCode { get; private set; }
         public bool IsSystemDefault { get; private set; }
-        public int? UserId { get; private set; } 
-        public User? User { get; private set; } 
+        public int? UserId { get; private set; }
+        public User? User { get; private set; }
 
         private readonly List<Transaction> _transactions = new();
         public IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
 
-        private Category() { }
+        private Category()
+        {
+            Name = string.Empty;
+            IconName = string.Empty;
+            ColorCode = string.Empty;
+        }
 
-        // Factory dla kategorii systemowych
         public static Category CreateSystem(string name, string iconName, string colorCode, string? description = null)
         {
             ValidateName(name);
@@ -35,7 +39,7 @@ namespace BudgetTracker.Domain.Entities
                 IconName = iconName,
                 ColorCode = colorCode,
                 IsSystemDefault = true,
-                UserId = null // ← systemowa!
+                UserId = null
             };
         }
 
@@ -51,7 +55,7 @@ namespace BudgetTracker.Domain.Entities
                 IconName = iconName,
                 ColorCode = colorCode,
                 IsSystemDefault = false,
-                UserId = userId 
+                UserId = userId
             };
         }
 
@@ -72,9 +76,6 @@ namespace BudgetTracker.Domain.Entities
 
         public bool CanBeDeleted()
         {
-            // Nie można usunąć jeśli:
-            // 1. Jest systemowa
-            // 2. Ma powiązane transakcje
             return !IsSystemDefault && !_transactions.Any();
         }
 
@@ -89,7 +90,6 @@ namespace BudgetTracker.Domain.Entities
 
         private static void ValidateColorCode(string colorCode)
         {
-            // Regex dla #hex color
             var hexPattern = @"^#[0-9A-Fa-f]{6}$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(colorCode, hexPattern))
                 throw new DomainException("Invalid color code format (expected #RRGGBB)");

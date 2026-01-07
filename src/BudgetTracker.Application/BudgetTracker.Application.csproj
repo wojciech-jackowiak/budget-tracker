@@ -21,8 +21,4 @@
     <ProjectReference Include="..\BudgetTracker.Domain\BudgetTracker.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Categories\Queries\GetCategories\" />
-  </ItemGroup>
-
 </Project>

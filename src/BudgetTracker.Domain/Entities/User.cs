@@ -21,7 +21,12 @@ namespace BudgetTracker.Domain.Entities
         private readonly List<RefreshToken> _refreshTokens = new();
         public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
 
-        private User() { }
+        private User()
+        {
+            Username = string.Empty;
+            Email = string.Empty;
+            PasswordHash = string.Empty;
+        }
 
         public static User Create(string username, string email, string passwordHash)
         {

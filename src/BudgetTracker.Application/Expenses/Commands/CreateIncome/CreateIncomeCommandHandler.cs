@@ -1,39 +1,44 @@
-﻿using BudgetTracker.Application.Common.Interfaces;
-using BudgetTracker.Application.Expenses.Commands.CreateExpense;
+﻿using BudgetTracker.Application.Common.Exceptions;
+using BudgetTracker.Application.Common.Interfaces;
 using BudgetTracker.Domain.Entities;
 using BudgetTracker.Domain.Enums;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace BudgetTracker.Application.Expenses.Commands.CreateIncome
-{   
-    public class CreateIncomeCommandHandler : IRequestHandler<CreateIncomeCommand, int>
+{
+    public class CreateIncomeHandler : IRequestHandler<CreateIncomeCommand, int>
     {
         private readonly IBudgetTrackerDbContext _context;
 
-        public CreateIncomeCommandHandler(IBudgetTrackerDbContext context)
+        public CreateIncomeHandler(IBudgetTrackerDbContext context)
         {
             _context = context;
         }
 
         public async Task<int> Handle(CreateIncomeCommand request, CancellationToken cancellationToken)
         {
-            var transaction = new Transaction
-            {
-                Amount = request.Amount,
-                Description = request.Description,
-                Date = request.Date,
-                CategoryId = request.CategoryId,
-                UserId = request.UserId,
-                Type = TransactionType.Income
-            };
+            var categoryExists = await _context.Categories
+                .AnyAsync(c => c.Id == request.CategoryId, cancellationToken);
 
-            _context.Transactions.Add(transaction);
+            if (!categoryExists)
+            {
+                throw new NotFoundException(nameof(Category), request.CategoryId);
+            }
+
+            var income = Transaction.Create(
+                userId: request.UserId,
+                categoryId: request.CategoryId,
+                amount: request.Amount,
+                type: TransactionType.Income,
+                description: request.Description,
+                date: request.Date
+            );
+
+            _context.Transactions.Add(income);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return transaction.Id;
+            return income.Id;
         }
     }
 }

@@ -12,6 +12,9 @@ namespace BudgetTracker.Application.Common.Interfaces
         DbSet<Category> Categories { get; }
         DbSet<Transaction> Transactions { get; }
         DbSet<RefreshToken> RefreshTokens { get; }
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        DbSet<BudgetLimit> BudgetLimits { get; } 
+        DbSet<RecurringTransaction> RecurringTransactions { get; } 
+
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

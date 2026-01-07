@@ -12,20 +12,23 @@ namespace BudgetTracker.Domain.Entities
         public decimal Amount { get; private set; }
         public string Description { get; private set; }
         public DateTime Date { get; private set; }
-        public string MonthYear { get; private set; } // "2026-01" dla grupowania
+        public string MonthYear { get; private set; }
         public TransactionType Type { get; private set; }
 
-        public int CategoryId { get; private set; } // ← NOT NULL!
+        public int CategoryId { get; private set; }
         public Category Category { get; private set; } = null!;
 
         public int UserId { get; private set; }
         public User User { get; private set; } = null!;
 
-        // Link do recurring parent (jeśli została wygenerowana automatycznie)
         public int? RecurringTransactionId { get; private set; }
         public RecurringTransaction? RecurringTransaction { get; private set; }
 
-        private Transaction() { }
+        private Transaction()
+        {
+            Description = string.Empty;
+            MonthYear = string.Empty;
+        }
 
         public static Transaction Create(
             int userId,
@@ -63,7 +66,7 @@ namespace BudgetTracker.Domain.Entities
                 Description = recurringTransaction.Description,
                 Date = date,
                 MonthYear = date.ToString("yyyy-MM"),
-                RecurringTransactionId = recurringTransaction.Id // ← link!
+                RecurringTransactionId = recurringTransaction.Id
             };
         }
 
@@ -88,7 +91,6 @@ namespace BudgetTracker.Domain.Entities
             if (amount <= 0)
                 throw new DomainException("Amount must be greater than zero");
 
-            // Zabezpieczenie przed zbyt dużymi kwotami (np. błąd w UI)
             if (amount > 1_000_000_000)
                 throw new DomainException("Amount exceeds maximum allowed value");
         }

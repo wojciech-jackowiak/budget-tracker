@@ -1,20 +1,19 @@
 ﻿using BudgetTracker.Application.Common.Interfaces;
-using BudgetTracker.Application.Expenses.Queries.GetExpenses;
 using BudgetTracker.Application.Transactions.Queries.GetTransactions;
 using BudgetTracker.Domain.Entities;
 using BudgetTracker.Domain.Enums;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
-namespace BudgetTracker.Application.Tests.Expenses.Queries.GetExpenses
+
+namespace BudgetTracker.Application.Tests.Transactions.Queries
 {
-    public class GetExpensesQueryHandlerTests
+    public class GetTransactionsQueryHandlerTests
     {
         private readonly Mock<IBudgetTrackerDbContext> _contextMock;
         private readonly GetTransactionsHandler _handler;
 
-        public GetExpensesQueryHandlerTests()
+        public GetTransactionsQueryHandlerTests()
         {
             _contextMock = new Mock<IBudgetTrackerDbContext>();
             _handler = new GetTransactionsHandler(_contextMock.Object);
@@ -145,7 +144,7 @@ namespace BudgetTracker.Application.Tests.Expenses.Queries.GetExpenses
             var query = new GetTransactionsQuery
             {
                 UserId = 1,
-                Type = "Expense" 
+                Type = "Expense"
             };
 
             // Act
@@ -197,7 +196,7 @@ namespace BudgetTracker.Application.Tests.Expenses.Queries.GetExpenses
             var query = new GetTransactionsQuery
             {
                 UserId = 1,
-                MonthYear = "2026-01"  // ✅ Filtr po miesiącu
+                MonthYear = "2026-01"
             };
 
             // Act
@@ -226,7 +225,7 @@ namespace BudgetTracker.Application.Tests.Expenses.Queries.GetExpenses
             var query = new GetTransactionsQuery
             {
                 UserId = 1,
-                CategoryId = 1  // ✅ Tylko Food
+                CategoryId = 1
             };
 
             // Act
@@ -286,8 +285,8 @@ namespace BudgetTracker.Application.Tests.Expenses.Queries.GetExpenses
             var income = result.First(t => t.Type == "Income");
             var expense = result.First(t => t.Type == "Expense");
 
-            income.SignedAmount.Should().Be(100m);   // ✅ Positive
-            expense.SignedAmount.Should().Be(-50m);  // ✅ Negative
+            income.SignedAmount.Should().Be(100m);   //Positive
+            expense.SignedAmount.Should().Be(-50m);  //Negative
         }
     }
 }

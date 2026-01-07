@@ -1,38 +1,43 @@
-﻿using BudgetTracker.Application.Common.Interfaces;
+﻿using BudgetTracker.Application.Common.Exceptions;
+using BudgetTracker.Application.Common.Interfaces;
 using BudgetTracker.Domain.Entities;
 using BudgetTracker.Domain.Enums;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
+using Microsoft.EntityFrameworkCore;
 namespace BudgetTracker.Application.Expenses.Commands.CreateExpense
 {
-    public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand, int>
+    public class CreateExpenseHandler : IRequestHandler<CreateExpenseCommand, int>
     {
         private readonly IBudgetTrackerDbContext _context;
 
-        public CreateExpenseCommandHandler(IBudgetTrackerDbContext context)
+        public CreateExpenseHandler(IBudgetTrackerDbContext context)
         {
             _context = context;
         }
 
         public async Task<int> Handle(CreateExpenseCommand request, CancellationToken cancellationToken)
         {
-            var transaction = new Transaction
-            {
-                Amount = request.Amount,
-                Description = request.Description,
-                Date = request.Date,
-                CategoryId = request.CategoryId,
-                UserId = request.UserId,
-                Type = TransactionType.Expense
-            };
+            var categoryExists = await _context.Categories
+                .AnyAsync(c => c.Id == request.CategoryId, cancellationToken);
 
-            _context.Transactions.Add(transaction);
+            if (!categoryExists)
+            {
+                throw new NotFoundException(nameof(Category), request.CategoryId);
+            }
+
+            var expense = Transaction.Create(
+                userId: request.UserId,
+                categoryId: request.CategoryId,
+                amount: request.Amount,
+                type: TransactionType.Expense,
+                description: request.Description,
+                date: request.Date
+            );
+
+            _context.Transactions.Add(expense);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return transaction.Id;
+            return expense.Id;
         }
     }
 }

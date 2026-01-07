@@ -6,26 +6,39 @@ using BudgetTracker.Domain.Enums;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using MockQueryable.Moq;
 
 namespace BudgetTracker.Application.Tests.Incomes.Commands
 {
     public class CreateIncomeCommandTests
     {
         private readonly Mock<IBudgetTrackerDbContext> _contextMock;
-        private readonly CreateIncomeCommandHandler _handler;
+        private readonly CreateIncomeHandler _handler;
         private readonly List<Transaction> _transactions;
+        private readonly List<Category> _categories;
         private int _idCounter = 1;
         public CreateIncomeCommandTests()
         {
             _contextMock = new Mock<IBudgetTrackerDbContext>();
             _transactions = new List<Transaction>();
+            _categories = new List<Category>();
 
+            SetupCategoriesDbSet();
             SetupTransactionsDbSet();
 
-            _handler = new CreateIncomeCommandHandler(_contextMock.Object);
+            _handler = new CreateIncomeHandler(_contextMock.Object);
+        }
+        private void SetupCategoriesDbSet()
+        {
+            var testCategory = Category.CreateSystem("Test Category", "📝", "#999999");
+            typeof(Category).GetProperty("Id")!.SetValue(testCategory, 1);
+            _categories.Add(testCategory);
+
+            var mockCategoriesSet = _categories.BuildMockDbSet<Category>();
+
+            _contextMock
+                .Setup(x => x.Categories)
+                .Returns(mockCategoriesSet.Object);
         }
         private void SetupTransactionsDbSet()
         {
@@ -35,7 +48,7 @@ namespace BudgetTracker.Application.Tests.Incomes.Commands
                 .Setup(m => m.Add(It.IsAny<Transaction>()))
                 .Callback<Transaction>(t =>
                 {
-                    t.Id = _idCounter++;
+                    typeof(Transaction).GetProperty("Id")!.SetValue(t, _idCounter++);
                     _transactions.Add(t);
                 });
 
@@ -54,7 +67,7 @@ namespace BudgetTracker.Application.Tests.Incomes.Commands
             // Arrange
             var command = new CreateIncomeCommand
             {
-                Amount = 5000,
+                Amount = 1000m,
                 Description = "Monthly salary",
                 Date = DateTime.UtcNow,
                 CategoryId = 1,
@@ -67,15 +80,16 @@ namespace BudgetTracker.Application.Tests.Incomes.Commands
             // Assert
             result.Should().BeGreaterThan(0);
         }
+
         [Fact]
         public async Task Handle_ValidCommand_ShouldCreateTransactionWithCorrectData()
         {
             // Arrange
             var command = new CreateIncomeCommand
             {
-                Amount = 500,
-                Description = "Deposit",
-                Date = new DateTime(2025, 12, 10, 12, 0, 0, DateTimeKind.Utc),
+                Amount = 2500m,
+                Description = "Freelance payment",
+                Date = new DateTime(2026, 1, 15, 12, 0, 0, DateTimeKind.Utc),
                 CategoryId = 1,
                 UserId = 1
             };
@@ -87,20 +101,24 @@ namespace BudgetTracker.Application.Tests.Incomes.Commands
             _transactions.Should().HaveCount(1);
 
             var created = _transactions[0];
-            created.Amount.Should().Be(500);
-            created.Description.Should().Be("Deposit");
+            created.Amount.Should().Be(2500m);
+            created.Description.Should().Be("Freelance payment");
             created.CategoryId.Should().Be(1);
             created.UserId.Should().Be(1);
+            created.Type.Should().Be(TransactionType.Income);
+            created.MonthYear.Should().Be("2026-01");
         }
+
         [Fact]
         public async Task Handle_ValidCommand_ShouldSetTransactionTypeToIncome()
         {
             // Arrange
             var command = new CreateIncomeCommand
             {
-                Amount = 250,
+                Amount = 250m,
                 Description = "Tax return",
                 Date = DateTime.UtcNow,
+                CategoryId = 1,
                 UserId = 1
             };
 
@@ -110,16 +128,17 @@ namespace BudgetTracker.Application.Tests.Incomes.Commands
             // Assert
             _transactions[0].Type.Should().Be(TransactionType.Income);
         }
-       
+
         [Fact]
         public async Task Handle_ValidCommand_ShouldCallSaveChangesAsync()
         {
             // Arrange
             var command = new CreateIncomeCommand
             {
-                Amount = 80,
-                Description = "Winning on lottery",
+                Amount = 500m,
+                Description = "Bonus",
                 Date = DateTime.UtcNow,
+                CategoryId = 1,
                 UserId = 1
             };
 
@@ -131,17 +150,38 @@ namespace BudgetTracker.Application.Tests.Incomes.Commands
                 x => x.SaveChangesAsync(It.IsAny<CancellationToken>()),
                 Times.Once);
         }
-        
+
         [Fact]
-        public async Task Handle_WithoutCategoryId_ShouldCreateTransactionWithNullCategory()
+        public async Task Handle_WithNonExistentCategory_ShouldThrowNotFoundException()
         {
             // Arrange
             var command = new CreateIncomeCommand
             {
-                Amount = 500,
-                Description = "Extra working hours",
+                Amount = 1000m,
+                Description = "Salary",
                 Date = DateTime.UtcNow,
-                CategoryId = null,
+                CategoryId = 999, 
+                UserId = 1
+            };
+
+            // Act
+            var act = async () => await _handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            await act.Should().ThrowAsync<BudgetTracker.Application.Common.Exceptions.NotFoundException>();
+        }
+
+        [Fact]
+        public async Task Handle_ShouldSetMonthYearAutomatically()
+        {
+            // Arrange
+            var testDate = new DateTime(2026, 3, 20);
+            var command = new CreateIncomeCommand
+            {
+                Amount = 1500m,
+                Description = "Salary",
+                Date = testDate,
+                CategoryId = 1,
                 UserId = 1
             };
 
@@ -149,7 +189,8 @@ namespace BudgetTracker.Application.Tests.Incomes.Commands
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _transactions[0].CategoryId.Should().BeNull();
+            _transactions[0].MonthYear.Should().Be("2026-03");
         }
+
     }
 }
