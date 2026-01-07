@@ -80,11 +80,4 @@ jobs:
       
       - name: Test
         working-directory: ${{ env.SOLUTION_PATH }}
-        run: dotnet test --configuration Release --no-build --verbosity normal
-      
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: ${{ env.SOLUTION_PATH }}/**/TestResults/
+        run: dotnet test --configuration Release --no-build --verbosity normal    
