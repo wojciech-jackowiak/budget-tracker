@@ -28,7 +28,10 @@ namespace BudgetTracker.Domain.Entities
         private readonly List<Transaction> _generatedTransactions = new();
         public IReadOnlyCollection<Transaction> GeneratedTransactions => _generatedTransactions.AsReadOnly();
 
-        private RecurringTransaction() { }
+        private RecurringTransaction()
+        {
+            Description = string.Empty;
+        }
 
         public static RecurringTransaction CreateInfinite(
             int userId,

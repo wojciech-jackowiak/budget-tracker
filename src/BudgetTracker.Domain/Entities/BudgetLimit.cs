@@ -14,10 +14,13 @@ namespace BudgetTracker.Domain.Entities
         public int CategoryId { get; private set; }
         public Category Category { get; private set; } = null!;
 
-        public string MonthYear { get; private set; } // "2026-01"
+        public string MonthYear { get; private set; }
         public decimal LimitAmount { get; private set; }
 
-        private BudgetLimit() { }
+        private BudgetLimit()
+        {
+            MonthYear = string.Empty;
+        }
 
         public static BudgetLimit Create(int userId, int categoryId, string monthYear, decimal limitAmount)
         {
@@ -42,7 +45,6 @@ namespace BudgetTracker.Domain.Entities
 
         private static void ValidateMonthYear(string monthYear)
         {
-            // Format: "2026-01"
             var pattern = @"^\d{4}-\d{2}$";
             if (!System.Text.RegularExpressions.Regex.IsMatch(monthYear, pattern))
                 throw new DomainException("Invalid month-year format (expected yyyy-MM)");
