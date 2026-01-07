@@ -1,4 +1,5 @@
 ﻿using BudgetTracker.Domain.Common;
+using BudgetTracker.Domain.Common.Exceptions;
 using BudgetTracker.Domain.Enums;
 using System;
 using System.Collections.Generic;
