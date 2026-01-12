@@ -6,7 +6,7 @@ Personal finance tracking application built with modern technologies and best pr
 
 - **Backend:** .NET 10, ASP.NET Core Web API, Entity Framework Core
 - **Frontend:** React 18, TypeScript, Vite
-- **Database:** PostgreSQL
+- **Database:** SQL Server
 - **Architecture:** Clean Architecture, CQRS with MediatR
 
 ## Project Structure
