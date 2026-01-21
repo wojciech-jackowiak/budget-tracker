@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BudgetTracker.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260121124001_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260121124922_InitialCreateWithSeed")]
+    partial class InitialCreateWithSeed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,6 +114,208 @@ namespace BudgetTracker.Infrastructure.Migrations
                     b.HasIndex("IsSystemDefault", "Name");
 
                     b.ToTable("Categories", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ColorCode = "#4CAF50",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Monthly salary and wages",
+                            IconName = "💰",
+                            IsSystemDefault = true,
+                            Name = "Salary"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ColorCode = "#2196F3",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Freelance income and side projects",
+                            IconName = "💼",
+                            IsSystemDefault = true,
+                            Name = "Freelance"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ColorCode = "#9C27B0",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Investment returns and dividends",
+                            IconName = "📈",
+                            IsSystemDefault = true,
+                            Name = "Investments"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ColorCode = "#FF6B6B",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Groceries, restaurants, and food delivery",
+                            IconName = "🍔",
+                            IsSystemDefault = true,
+                            Name = "Food & Dining"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ColorCode = "#4ECDC4",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Fuel, public transport, and car maintenance",
+                            IconName = "🚗",
+                            IsSystemDefault = true,
+                            Name = "Transportation"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ColorCode = "#95E1D3",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Movies, games, subscriptions, and hobbies",
+                            IconName = "🎬",
+                            IsSystemDefault = true,
+                            Name = "Entertainment"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ColorCode = "#F3A683",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Electricity, water, internet, and phone bills",
+                            IconName = "💡",
+                            IsSystemDefault = true,
+                            Name = "Utilities"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            ColorCode = "#786FA6",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Medical expenses, insurance, and pharmacy",
+                            IconName = "🏥",
+                            IsSystemDefault = true,
+                            Name = "Healthcare"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            ColorCode = "#F8B500",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Clothing, electronics, and general shopping",
+                            IconName = "🛍️",
+                            IsSystemDefault = true,
+                            Name = "Shopping"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            ColorCode = "#3F51B5",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Courses, books, and learning materials",
+                            IconName = "📚",
+                            IsSystemDefault = true,
+                            Name = "Education"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            ColorCode = "#E91E63",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Rent, mortgage, and home maintenance",
+                            IconName = "🏠",
+                            IsSystemDefault = true,
+                            Name = "Housing"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            ColorCode = "#00BCD4",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Personal savings and emergency fund",
+                            IconName = "🐷",
+                            IsSystemDefault = true,
+                            Name = "Savings"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            ColorCode = "#FF9800",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Presents, charity, and donations",
+                            IconName = "🎁",
+                            IsSystemDefault = true,
+                            Name = "Gifts & Donations"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            ColorCode = "#009688",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Vacations, trips, and accommodation",
+                            IconName = "✈️",
+                            IsSystemDefault = true,
+                            Name = "Travel"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            ColorCode = "#E91E63",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Haircuts, cosmetics, and wellness",
+                            IconName = "💅",
+                            IsSystemDefault = true,
+                            Name = "Personal Care"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            ColorCode = "#607D8B",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Life, health, and property insurance",
+                            IconName = "🛡️",
+                            IsSystemDefault = true,
+                            Name = "Insurance"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            ColorCode = "#F44336",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Loan payments and credit card bills",
+                            IconName = "💳",
+                            IsSystemDefault = true,
+                            Name = "Debt Payment"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            ColorCode = "#8BC34A",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Pet food, vet, and supplies",
+                            IconName = "🐕",
+                            IsSystemDefault = true,
+                            Name = "Pets"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            ColorCode = "#FF5722",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Gym, equipment, and sports activities",
+                            IconName = "⚽",
+                            IsSystemDefault = true,
+                            Name = "Sports & Fitness"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            ColorCode = "#9E9E9E",
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Miscellaneous expenses",
+                            IconName = "📌",
+                            IsSystemDefault = true,
+                            Name = "Other"
+                        });
                 });
 
             modelBuilder.Entity("BudgetTracker.Domain.Entities.RecurringTransaction", b =>
@@ -346,7 +548,7 @@ namespace BudgetTracker.Infrastructure.Migrations
                     b.HasOne("BudgetTracker.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -359,7 +561,7 @@ namespace BudgetTracker.Infrastructure.Migrations
                     b.HasOne("BudgetTracker.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.Navigation("User");
                 });
@@ -375,7 +577,7 @@ namespace BudgetTracker.Infrastructure.Migrations
                     b.HasOne("BudgetTracker.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("Category");

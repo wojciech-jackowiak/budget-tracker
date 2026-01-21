@@ -42,7 +42,7 @@ namespace BudgetTracker.Infrastructure.Data.Configurations
             builder.HasOne(t => t.User)
                 .WithMany(u => u.Transactions)
                 .HasForeignKey(t => t.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.ClientCascade);
 
             builder.HasOne(t => t.Category)
                 .WithMany(c => c.Transactions)

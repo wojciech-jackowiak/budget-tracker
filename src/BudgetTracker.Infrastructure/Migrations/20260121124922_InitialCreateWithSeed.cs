@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace BudgetTracker.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreateWithSeed : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -52,8 +54,7 @@ namespace BudgetTracker.Infrastructure.Migrations
                         name: "FK_Categories_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -109,8 +110,7 @@ namespace BudgetTracker.Infrastructure.Migrations
                         name: "FK_BudgetLimits_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -145,8 +145,7 @@ namespace BudgetTracker.Infrastructure.Migrations
                         name: "FK_RecurringTransactions_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -187,6 +186,33 @@ namespace BudgetTracker.Infrastructure.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "ColorCode", "CreatedAt", "Description", "IconName", "IsSystemDefault", "Name", "UpdatedAt", "UserId" },
+                values: new object[,]
+                {
+                    { 1, "#4CAF50", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Monthly salary and wages", "💰", true, "Salary", null, null },
+                    { 2, "#2196F3", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Freelance income and side projects", "💼", true, "Freelance", null, null },
+                    { 3, "#9C27B0", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Investment returns and dividends", "📈", true, "Investments", null, null },
+                    { 4, "#FF6B6B", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Groceries, restaurants, and food delivery", "🍔", true, "Food & Dining", null, null },
+                    { 5, "#4ECDC4", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Fuel, public transport, and car maintenance", "🚗", true, "Transportation", null, null },
+                    { 6, "#95E1D3", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Movies, games, subscriptions, and hobbies", "🎬", true, "Entertainment", null, null },
+                    { 7, "#F3A683", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Electricity, water, internet, and phone bills", "💡", true, "Utilities", null, null },
+                    { 8, "#786FA6", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Medical expenses, insurance, and pharmacy", "🏥", true, "Healthcare", null, null },
+                    { 9, "#F8B500", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Clothing, electronics, and general shopping", "🛍️", true, "Shopping", null, null },
+                    { 10, "#3F51B5", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Courses, books, and learning materials", "📚", true, "Education", null, null },
+                    { 11, "#E91E63", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Rent, mortgage, and home maintenance", "🏠", true, "Housing", null, null },
+                    { 12, "#00BCD4", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Personal savings and emergency fund", "🐷", true, "Savings", null, null },
+                    { 13, "#FF9800", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Presents, charity, and donations", "🎁", true, "Gifts & Donations", null, null },
+                    { 14, "#009688", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Vacations, trips, and accommodation", "✈️", true, "Travel", null, null },
+                    { 15, "#E91E63", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Haircuts, cosmetics, and wellness", "💅", true, "Personal Care", null, null },
+                    { 16, "#607D8B", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Life, health, and property insurance", "🛡️", true, "Insurance", null, null },
+                    { 17, "#F44336", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Loan payments and credit card bills", "💳", true, "Debt Payment", null, null },
+                    { 18, "#8BC34A", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Pet food, vet, and supplies", "🐕", true, "Pets", null, null },
+                    { 19, "#FF5722", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Gym, equipment, and sports activities", "⚽", true, "Sports & Fitness", null, null },
+                    { 20, "#9E9E9E", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Miscellaneous expenses", "📌", true, "Other", null, null }
                 });
 
             migrationBuilder.CreateIndex(

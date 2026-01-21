@@ -1,6 +1,7 @@
 ﻿using BudgetTracker.Application.Common.Interfaces;
 using BudgetTracker.Domain.Common;
 using BudgetTracker.Domain.Entities;
+using BudgetTracker.Infrastructure.Data.Seed;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace BudgetTracker.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-
+            CategorySeeder.SeedCategories(modelBuilder);
             base.OnModelCreating(modelBuilder);
         }
     }    
