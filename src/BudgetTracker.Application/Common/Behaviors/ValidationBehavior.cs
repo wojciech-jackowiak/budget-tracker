@@ -21,11 +21,11 @@ namespace BudgetTracker.Application.Common.Behaviors
             RequestHandlerDelegate<TResponse> next,
             CancellationToken cancellationToken)
         {
+            
             if (!_validators.Any())
             {
                 return await next();
             }
-
             var context = new ValidationContext<TRequest>(request);
 
             var validationResults = await Task.WhenAll(
