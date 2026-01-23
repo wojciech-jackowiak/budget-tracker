@@ -8,8 +8,6 @@ namespace BudgetTracker.Domain.Entities
 {
     public class RefreshToken : BaseEntity
     {
-
-
         public string Token { get; private set; }
         public DateTime ExpiresAt { get; private set; }
         public DateTime? RevokedAt { get; private set; }
@@ -76,7 +74,11 @@ namespace BudgetTracker.Domain.Entities
             ReplacedByToken = replacedByToken;
             MarkAsModified();
         }
-
+        public void MarkAsReplaced(string newToken, string? revokedByIp = null)
+        {
+            ReplacedByToken = newToken;
+            Revoke(revokedByIp);
+        }
         /// <summary>
         /// Sprawdza czy token może być użyty do refresh operacji.
         /// </summary>

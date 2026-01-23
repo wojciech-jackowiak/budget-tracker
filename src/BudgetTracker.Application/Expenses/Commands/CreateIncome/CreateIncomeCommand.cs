@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BudgetTracker.Application.Expenses.Commands.CreateIncome
 {    
-    public class CreateIncomeCommand : IRequest<int>
+    public record CreateIncomeCommand : IRequest<int>
     {
         public required int UserId { get; init; }
         public required int CategoryId { get; init; }

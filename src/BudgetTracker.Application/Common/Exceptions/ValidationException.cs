@@ -19,5 +19,10 @@ namespace BudgetTracker.Application.Common.Exceptions
                 .GroupBy(e => e.PropertyName, e => e.ErrorMessage)
                 .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.ToArray());
         }
+        public ValidationException(IDictionary<string, string[]> errors)
+        : base("One or more validation failures have occurred.")
+        {
+            Errors = errors;
+        }
     }
 }

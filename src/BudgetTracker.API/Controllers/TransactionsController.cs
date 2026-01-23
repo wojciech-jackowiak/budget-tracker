@@ -3,12 +3,16 @@ using BudgetTracker.Application.Expenses.Commands.CreateIncome;
 using BudgetTracker.Application.Transactions.Queries.GetTransactions;
 using BudgetTracker.Application.Transactions.Queries.GetTransactionsById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BudgetTracker.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TransactionsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -16,6 +20,18 @@ namespace BudgetTracker.API.Controllers
         public TransactionsController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        private int GetCurrentUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+            {
+                throw new UnauthorizedAccessException("User ID not found in token");
+            }
+
+            return userId;
         }
         /// <summary>
         /// Creates a new expense transaction
@@ -25,7 +41,10 @@ namespace BudgetTracker.API.Controllers
         [HttpPost("expenses")]
         public async Task<IActionResult> CreateExpense(CreateExpenseCommand command)
         {
-            var id = await _mediator.Send(command);
+            var userId = GetCurrentUserId();
+            var secureCommand = command with { UserId = userId };
+
+            var id = await _mediator.Send(secureCommand);
             return CreatedAtAction(nameof(GetById), new { id }, id);
         }
 
@@ -37,17 +56,20 @@ namespace BudgetTracker.API.Controllers
         [HttpPost("income")]
         public async Task<IActionResult> CreateIncome(CreateIncomeCommand command)
         {
-            var id = await _mediator.Send(command);
+            var userId = GetCurrentUserId();
+            var secureCommand = command with { UserId = userId };
+
+            var id = await _mediator.Send(secureCommand);
             return CreatedAtAction(nameof(GetById), new { id }, id);
         }
         [HttpGet]
-        public async Task<IActionResult> GetTransactions(
-                                                        [FromQuery] int userId,           
+        public async Task<IActionResult> GetTransactions(                                                                 
                                                         [FromQuery] string? monthYear,    
                                                         [FromQuery] int? categoryId,      
                                                         [FromQuery] string? type          
                                                     )
         {
+            var userId = GetCurrentUserId();
             var query = new GetTransactionsQuery
             {
                 UserId = userId,
@@ -70,10 +92,16 @@ namespace BudgetTracker.API.Controllers
         {
             var query = new GetTransactionByIdQuery { Id = id };
             var result = await _mediator.Send(query);
-            
+
             if (result == null)
                 return NotFound();
-            
+
+            var userId = GetCurrentUserId();
+            if (result.UserId != userId)
+            {
+                return Forbid(); 
+            }
+
             return Ok(result);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using BudgetTracker.Application.Common.Interfaces;
 using BudgetTracker.Infrastructure.Data;
+using BudgetTracker.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,11 @@ namespace BudgetTracker.Infrastructure
             services.AddScoped<IBudgetTrackerDbContext>(provider =>
                 provider.GetRequiredService<ApplicationDbContext>());
 
+
+            services.Configure<Settings.JwtSettings>(
+                configuration.GetSection("JwtSettings")
+            );
+            services.AddScoped<IJwtService, JwtService>();
             return services;
         }
     }
