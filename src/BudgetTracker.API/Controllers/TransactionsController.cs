@@ -5,32 +5,47 @@ using BudgetTracker.Application.Transactions.Queries.GetTransactionsById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 
 namespace BudgetTracker.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    //[Authorize]
     public class TransactionsController : ControllerBase
     {
         private readonly IMediator _mediator;
-
-        public TransactionsController(IMediator mediator)
+        private readonly ILogger<TransactionsController> _logger;
+        public TransactionsController(IMediator mediator, ILogger<TransactionsController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         private int GetCurrentUserId()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            _logger.LogInformation("=== ALL CLAIMS ===");
+            foreach (var claim in User.Claims)
+            {
+                _logger.LogInformation($"Type: '{claim.Type}', Value: '{claim.Value}'");
+            }
+            _logger.LogInformation($"User.Identity.IsAuthenticated: {User.Identity?.IsAuthenticated}");
+            _logger.LogInformation($"User.Identity.Name: {User.Identity?.Name}");
+
+            var userIdClaim = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value
+                   ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value  // To samo
+                   ?? User.FindFirst("sub")?.Value;
+
+            _logger.LogInformation($"UserIdClaim found: '{userIdClaim}'");
 
             if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
             {
+                _logger.LogError("User ID not found in token or invalid format");
                 throw new UnauthorizedAccessException("User ID not found in token");
             }
 
+            _logger.LogInformation($"UserId extracted: {userId}");
             return userId;
         }
         /// <summary>

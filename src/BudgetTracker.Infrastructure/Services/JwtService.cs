@@ -35,13 +35,13 @@ namespace BudgetTracker.Infrastructure.Services
         }
         public (string Token, DateTime ExpiresAt) GenerateAccessToken(User user)
         {
-             var claims = new List<Claim>
-             {
-                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                 new Claim(ClaimTypes.Name, user.Username),
-                 new Claim(ClaimTypes.Email, user.Email),
-                 new Claim(ClaimTypes.Role, user.Role.ToString())
-             };
+            var claims = new List<Claim>
+                    {
+                        new Claim("sub", user.Id.ToString()),       // ← KRÓTKI "sub"
+                        new Claim("name", user.Username),
+                        new Claim("email", user.Email),
+                        new Claim("role", user.Role.ToString())
+                    };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var expiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes);
