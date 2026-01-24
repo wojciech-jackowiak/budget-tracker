@@ -1,5 +1,7 @@
 ﻿using BudgetTracker.Application.Expenses.Commands.CreateExpense;
 using BudgetTracker.Application.Expenses.Commands.CreateIncome;
+using BudgetTracker.Application.Transactions.Commands.DeleteTransaction;
+using BudgetTracker.Application.Transactions.Commands.UpdateTransaction;
 using BudgetTracker.Application.Transactions.Queries.GetTransactions;
 using BudgetTracker.Application.Transactions.Queries.GetTransactionsById;
 using MediatR;
@@ -25,19 +27,29 @@ namespace BudgetTracker.API.Controllers
 
         private int GetCurrentUserId()
         {
-            _logger.LogInformation("=== ALL CLAIMS ===");
-            foreach (var claim in User.Claims)
-            {
-                _logger.LogInformation($"Type: '{claim.Type}', Value: '{claim.Value}'");
-            }
+            _logger.LogInformation("=== GetCurrentUserId DEBUG ===");
             _logger.LogInformation($"User.Identity.IsAuthenticated: {User.Identity?.IsAuthenticated}");
             _logger.LogInformation($"User.Identity.Name: {User.Identity?.Name}");
+            _logger.LogInformation($"User.Identity.AuthenticationType: {User.Identity?.AuthenticationType}");
+            _logger.LogInformation($"Claims count: {User.Claims.Count()}");
 
-            var userIdClaim = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value
-                   ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value  // To samo
-                   ?? User.FindFirst("sub")?.Value;
+            foreach (var claim in User.Claims)
+            {
+                _logger.LogInformation($"  Claim Type: '{claim.Type}', Value: '{claim.Value}'");
+            }
 
-            _logger.LogInformation($"UserIdClaim found: '{userIdClaim}'");
+            // Spróbuj różne claim types
+            var subClaim = User.FindFirst("sub")?.Value;
+            var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var longNameIdentifierClaim = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+
+            _logger.LogInformation($"sub claim: '{subClaim}'");
+            _logger.LogInformation($"NameIdentifier claim: '{nameIdentifierClaim}'");
+            _logger.LogInformation($"Long NameIdentifier claim: '{longNameIdentifierClaim}'");
+
+            var userIdClaim = subClaim ?? nameIdentifierClaim ?? longNameIdentifierClaim;
+
+            _logger.LogInformation($"Final userIdClaim: '{userIdClaim}'");
 
             if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
             {
@@ -78,11 +90,7 @@ namespace BudgetTracker.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id }, id);
         }
         [HttpGet]
-        public async Task<IActionResult> GetTransactions(                                                                 
-                                                        [FromQuery] string? monthYear,    
-                                                        [FromQuery] int? categoryId,      
-                                                        [FromQuery] string? type          
-                                                    )
+        public async Task<IActionResult> GetTransactions([FromQuery] string? monthYear,[FromQuery] int? categoryId,[FromQuery] string? type)
         {
             var userId = GetCurrentUserId();
             var query = new GetTransactionsQuery
@@ -118,6 +126,55 @@ namespace BudgetTracker.API.Controllers
             }
 
             return Ok(result);
+        }
+        /// <summary>
+        /// Updates an existing transaction
+        /// </summary>
+        /// <param name="command">Updated transaction details</param>
+        /// <returns>No content</returns>
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Update(int id, UpdateTransactionCommand command)
+        {
+            if (id != command.Id)
+            {
+                return BadRequest("Route ID and command ID must match");
+            }
+            var userId = GetCurrentUserId();            
+
+            var secureCommand = command with { UserId = userId };
+
+            await _mediator.Send(secureCommand);
+
+            return NoContent();
+        }
+        /// <summary>
+        /// Deletes a transaction
+        /// </summary>
+        /// <param name="id">Transaction ID to delete</param>
+        /// <returns>No content</returns>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var userId = GetCurrentUserId();
+
+            var command = new DeleteTransactionCommand
+            {
+                Id = id,
+                UserId = userId
+            };
+
+            await _mediator.Send(command);
+
+            return NoContent();
         }
     }
 }

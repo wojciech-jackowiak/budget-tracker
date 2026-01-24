@@ -7,7 +7,7 @@ namespace BudgetTracker.Application.Expenses.Commands.CreateIncome
 {    
     public record CreateIncomeCommand : IRequest<int>
     {
-        public required int UserId { get; init; }
+        public int UserId { get; init; }
         public required int CategoryId { get; init; }
         public required decimal Amount { get; init; }
         public required string Description { get; init; }

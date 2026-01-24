@@ -20,7 +20,7 @@ namespace BudgetTracker.Domain.Entities
 
         public int UserId { get; private set; }
         public User User { get; private set; } = null!;
-
+        public bool IsFromRecurring { get; private set; }
         public int? RecurringTransactionId { get; private set; }
         public RecurringTransaction? RecurringTransaction { get; private set; }
 
@@ -36,7 +36,9 @@ namespace BudgetTracker.Domain.Entities
             decimal amount,
             TransactionType type,
             string description,
-            DateTime date)
+            DateTime date,
+            bool isFromRecurring = false,         
+            int? recurringTransactionId = null)
         {
             ValidateAmount(amount);
             ValidateDescription(description);
@@ -49,7 +51,9 @@ namespace BudgetTracker.Domain.Entities
                 Type = type,
                 Description = description,
                 Date = date,
-                MonthYear = date.ToString("yyyy-MM")
+                MonthYear = date.ToString("yyyy-MM"),
+                IsFromRecurring = isFromRecurring,
+                RecurringTransactionId = recurringTransactionId                
             };
         }
 
@@ -70,7 +74,7 @@ namespace BudgetTracker.Domain.Entities
             };
         }
 
-        public void Update(decimal amount, int categoryId, string description, DateTime date)
+        public void Update(decimal amount, int categoryId, string description, DateTime date, TransactionType type)
         {
             if (RecurringTransactionId.HasValue)
                 throw new DomainException("Cannot edit recurring-generated transaction");
@@ -81,6 +85,7 @@ namespace BudgetTracker.Domain.Entities
             Amount = amount;
             CategoryId = categoryId;
             Description = description;
+            Type = type;
             Date = date;
             MonthYear = date.ToString("yyyy-MM");
             MarkAsModified();

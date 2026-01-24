@@ -47,6 +47,12 @@ namespace BudgetTracker.API.Common
                     problemDetails.Detail = domainException.Message;
                     break;
 
+                case UnauthorizedAccessException unauthorizedAccessException:
+                    problemDetails.Status = StatusCodes.Status403Forbidden;
+                    problemDetails.Title = "Forbidden";
+                    problemDetails.Detail = unauthorizedAccessException.Message;
+                    break;
+
                 default:
                     problemDetails.Status = StatusCodes.Status500InternalServerError;
                     problemDetails.Title = "Internal Server Error";
