@@ -19,7 +19,7 @@ namespace BudgetTracker.Domain.Entities
         public TransactionType Type { get; private set; }
         public string Description { get; private set; }
         public FrequencyType Frequency { get; private set; }
-
+        public int DayOfMonth { get; private set; }
         public DateTime StartDate { get; private set; }
         public DateTime? EndDate { get; private set; } 
         public bool IsActive { get; private set; }
@@ -40,12 +40,13 @@ namespace BudgetTracker.Domain.Entities
             TransactionType type,
             string description,
             DateTime startDate,
+            int dayOfMonth,
             FrequencyType frequency = FrequencyType.Monthly)
         {
             ValidateAmount(amount);
             ValidateDescription(description);
-
-            return new RecurringTransaction
+            ValidateDayOfMonth(dayOfMonth);
+            var recurring = new RecurringTransaction
             {
                 UserId = userId,
                 CategoryId = categoryId,
@@ -53,10 +54,13 @@ namespace BudgetTracker.Domain.Entities
                 Type = type,
                 Description = description,
                 StartDate = startDate,
-                EndDate = null, // ← null = infinite!
+                EndDate = null,
+                DayOfMonth = dayOfMonth,
                 Frequency = frequency,
                 IsActive = true
             };
+            recurring.MarkAsCreated();
+            return recurring;
         }
 
         public static RecurringTransaction CreateFixedTerm(
@@ -67,15 +71,17 @@ namespace BudgetTracker.Domain.Entities
             string description,
             DateTime startDate,
             DateTime endDate,
+            int dayOfMonth,
             FrequencyType frequency = FrequencyType.Monthly)
         {
             ValidateAmount(amount);
             ValidateDescription(description);
+            ValidateDayOfMonth(dayOfMonth);
 
             if (endDate <= startDate)
                 throw new DomainException("End date must be after start date");
 
-            return new RecurringTransaction
+            var recurring = new RecurringTransaction
             {
                 UserId = userId,
                 CategoryId = categoryId,
@@ -84,10 +90,25 @@ namespace BudgetTracker.Domain.Entities
                 Description = description,
                 StartDate = startDate,
                 EndDate = endDate, // ← fixed term!
+                DayOfMonth = dayOfMonth,
                 Frequency = frequency,
                 IsActive = true
             };
+            recurring.MarkAsCreated();
+            return recurring;
         }
+        public void Update(decimal amount, string description, int dayOfMonth)
+        {
+            ValidateAmount(amount);
+            ValidateDescription(description);
+            ValidateDayOfMonth(dayOfMonth);
+
+            Amount = amount;
+            Description = description;
+            DayOfMonth = dayOfMonth;
+            MarkAsModified();
+        }
+
 
         public void MarkAsProcessed(string monthYear)
         {
@@ -113,20 +134,25 @@ namespace BudgetTracker.Domain.Entities
             MarkAsModified();
         }
 
-        public bool ShouldProcessForMonth(string monthYear)
+        public bool ShouldProcessForMonth(string monthYear, DateTime currentDate)
         {
             if (!IsActive) return false;
 
-            var month = DateTime.Parse($"{monthYear}-01");
+            var monthStart = DateTime.Parse($"{monthYear}-01");
 
             // Czy jest przed StartDate?
-            if (month < StartDate) return false;
+            if (monthStart < StartDate.Date) return false;
 
             // Czy jest po EndDate?
-            if (EndDate.HasValue && month > EndDate.Value) return false;
+            if (EndDate.HasValue && monthStart > EndDate.Value.Date) return false;
 
             // Czy już przetworzono?
             if (LastProcessedMonth == monthYear) return false;
+
+            int daysInMonth = DateTime.DaysInMonth(currentDate.Year, currentDate.Month);
+            int actualDayOfMonth = DayOfMonth > daysInMonth ? daysInMonth : DayOfMonth;
+
+            if (currentDate.Day != actualDayOfMonth) return false;
 
             return true;
         }
@@ -141,6 +167,11 @@ namespace BudgetTracker.Domain.Entities
         {
             if (string.IsNullOrWhiteSpace(description))
                 throw new DomainException("Description cannot be empty");
+        }
+        private static void ValidateDayOfMonth(int dayOfMonth)
+        {
+            if (dayOfMonth < 1 || dayOfMonth > 31)
+                throw new DomainException("Day of month must be between 1 and 31");
         }
     }
 }

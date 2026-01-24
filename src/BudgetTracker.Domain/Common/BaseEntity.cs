@@ -19,7 +19,12 @@ namespace BudgetTracker.Domain.Common
         {
             UpdatedAt = DateTime.UtcNow;
         }
-
+        protected void MarkAsCreated()
+        {
+            var now = DateTime.UtcNow;
+            CreatedAt = now;
+            UpdatedAt = now;
+        }        
         public bool IsNew => Id == 0;
     }
 }

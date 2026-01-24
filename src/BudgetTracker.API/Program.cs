@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Text.Json.Serialization;
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 var builder = WebApplication.CreateBuilder(args);
@@ -139,6 +140,12 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 var app = builder.Build();
 
