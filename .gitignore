@@ -1,88 +1,30 @@
-## .NET
-*.swp
-*.*~
-project.lock.json
-.DS_Store
-*.pyc
-nupkg/
+# Backend (API)
+api/bin/
+api/obj/
+api/**/bin/
+api/**/obj/
+api/.vs/
+api/*.user
+api/*.suo
 
-# Visual Studio
-.vs/
-*.user
-*.userosscache
-*.sln.docstates
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env.local
+frontend/.env.*.local
 
-# Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
-[Ww][Ii][Nn]32/
-[Aa][Rr][Mm]/
-[Aa][Rr][Mm]64/
-bld/
-[Bb]in/
-[Oo]bj/
-[Ll]og/
-[Ll]ogs/
-
-# NuGet
-*.nupkg
-*.snupkg
-.nuget/
-nuget.exe
-NuGet.config
-
-# Test Results
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
-*.VisualState.xml
-TestResult.xml
-nunit-*.xml
-
-# dotnet
-project.lock.json
-project.fragment.lock.json
-artifacts/
-
-# ASP.NET
-ScaffoldingReadMe.txt
-
-# Rider
+# IDE
+.vscode/
 .idea/
+*.swp
+*.swo
+*~
 
-# User-specific files
-*.rsuser
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-
-# appsettings secrets
-appsettings.*.json
-!appsettings.json
-!appsettings.Development.json
-
-# Node.js (for frontend)
-node_modules/
-dist/
-.npm
-.eslintcache
-*.tsbuildinfo
-
-# Environment
-.env
-.env.local
-.env.*.local
-
-# Docker
-docker-compose.override.yml
+# OS
+.DS_Store
+Thumbs.db
 
 # Logs
-logs/
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
