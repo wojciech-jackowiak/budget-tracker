@@ -7,7 +7,7 @@ api/.vs/
 api/*.user
 api/*.suo
 
-# Frontend
+
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/

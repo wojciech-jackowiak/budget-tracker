@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { Plus } from 'lucide-react';
 import { Container, Grid, Button } from '../styles/components';
 import { transactionsApi } from '../api/transactions';
 import type { BudgetSummary } from '../types';
 import { formatCurrency, formatPercentage, getCurrentMonthYear, formatMonthYear } from '../utils/formatters';
 import StatCard from '../components/dashboard/StatCard';
 import CategoryBreakdownCard from '../components/dashboard/CategoryBreakdownCard';
+import AddTransactionForm from '../components/transactions/AddTransactionForm';
 
 const PageHeader = styled.div`
   display: flex;
@@ -56,6 +58,7 @@ const DashboardPage = () => {
   const [summary, setSummary] = useState<BudgetSummary | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showAddForm, setShowAddForm] = useState(false);
 
   useEffect(() => {
     loadSummary();
@@ -110,6 +113,13 @@ const DashboardPage = () => {
 
   return (
     <Container style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
+      {showAddForm && (
+        <AddTransactionForm
+          onClose={() => setShowAddForm(false)}
+          onSuccess={() => { setShowAddForm(false); loadSummary(); }}
+        />
+      )}
+
       <PageHeader>
         <Title>Dashboard 💰</Title>
         <MonthSelector>
@@ -121,6 +131,10 @@ const DashboardPage = () => {
             →
           </Button>
         </MonthSelector>
+        <Button variant="primary" onClick={() => setShowAddForm(true)}>
+          <Plus size={16} />
+          Add Transaction
+        </Button>
       </PageHeader>
 
       <Grid columns={4} gap="1.5rem" style={{ marginBottom: '2rem' }}>
